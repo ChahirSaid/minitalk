@@ -6,13 +6,22 @@
 /*   By: schahir <schahir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 23:59:56 by schahir           #+#    #+#             */
-/*   Updated: 2025/03/18 03:21:15 by schahir          ###   ########.fr       */
+/*   Updated: 2025/03/18 16:52:19 by schahir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minitalk_bonus.h"
 
 static int g_sent;
+
+void	send_signal(pid_t pid, int signal)
+{
+	if (kill(pid, signal) < 0)
+	{
+		ft_putstr_fd("Error: Kill Failed!\n", 2);
+		exit(1);
+	}
+}
 
 void	ft_done(int signal)
 {
@@ -28,10 +37,10 @@ void	ft_resend(int signal)
 
 void	send_bits(unsigned char c, pid_t pid)
 {
-	int i;
-	
-	int *arr = malloc(sizeof(int) * 8);
-	if (!arr)
+	int	i;
+	int	*arr;
+
+	if (!(arr = malloc(sizeof(int) * 8)))
 		return ;
 	i = 7;
 	while(i >= 0)
@@ -44,33 +53,33 @@ void	send_bits(unsigned char c, pid_t pid)
 	while (i < 8)
 	{
 		if(arr[i])
-			kill(pid, SIGUSR2);
+			send_signal(pid, SIGUSR2);
 		else
-			kill(pid, SIGUSR1);
+			send_signal(pid, SIGUSR1);
 		while (!g_sent)
 			;
-		i++;
 		g_sent = 0;
+		i++;
 	}
 	free(arr);
 }
 
 int main(int ac, char **av)
 {
-	char *message;
+	pid_t	pid;
+	char	*message;
 	
     if(ac != 3)
 		return(ft_putstr_fd("Error: Too many arguments\n", 2), 1);
 	if(!is_valid_number(av[1]))
 		return(ft_putstr_fd("Error: Invalid PID\n", 2), 1);
-	pid_t pid = ft_atoi(av[1]);
+	pid = ft_atoi(av[1]);
 	signal(SIGUSR1, ft_resend);
 	signal(SIGUSR2, ft_done);
 	message = av[2];
 	while(*message)
 		send_bits(*message++, pid);
-	if (*message == '\0')
-		send_bits(*message, pid);
+	send_bits('\0', pid);
 	return 0;
 }
 
