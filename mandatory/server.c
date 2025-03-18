@@ -6,7 +6,7 @@
 /*   By: schahir <schahir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 00:05:21 by schahir           #+#    #+#             */
-/*   Updated: 2025/03/17 16:52:18 by schahir          ###   ########.fr       */
+/*   Updated: 2025/03/18 02:03:33 by schahir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,13 @@ void ft_handle_signal(int signal, siginfo_t *info, void *context)
    	if (bit == 8)
 	{
 		if (c == '\0')
-			ft_printf("\n");
+			write(1, "\n", 1);
 		else
 			ft_printf("%c", c);
 		bit = 0;
 		c = 0;
 	}
+    kill(info->si_pid, SIGUSR1);
 }
 
 int main (int ac, char **av)
