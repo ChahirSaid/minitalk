@@ -1,20 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.c                                           :+:      :+:    :+:   */
+/*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: schahir <schahir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 23:59:56 by schahir           #+#    #+#             */
-/*   Updated: 2025/03/18 03:16:32 by schahir          ###   ########.fr       */
+/*   Updated: 2025/03/18 03:21:15 by schahir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minitalk.h"
+#include "../includes/minitalk_bonus.h"
 
 static int g_sent;
 
-void ft_resend(int signal)
+void	ft_done(int signal)
+{
+	if (signal == SIGUSR2)
+		ft_printf("Message Sent Successfully!\n");	
+}
+
+void	ft_resend(int signal)
 {
 	if (signal == SIGUSR1)
 		g_sent = 1;
@@ -59,6 +65,7 @@ int main(int ac, char **av)
 		return(ft_putstr_fd("Error: Invalid PID\n", 2), 1);
 	pid_t pid = ft_atoi(av[1]);
 	signal(SIGUSR1, ft_resend);
+	signal(SIGUSR2, ft_done);
 	message = av[2];
 	while(*message)
 		send_bits(*message++, pid);
