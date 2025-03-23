@@ -6,7 +6,7 @@
 /*   By: schahir <schahir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 23:59:56 by schahir           #+#    #+#             */
-/*   Updated: 2025/03/18 16:41:19 by schahir          ###   ########.fr       */
+/*   Updated: 2025/03/23 02:40:16 by schahir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,7 @@ void	send_bits(unsigned char c, pid_t pid)
 			send_signal(pid, SIGUSR2);
 		else
 			send_signal(pid, SIGUSR1);
-		while (!g_sent)
-			;
+		usleep(2000);
 		g_sent = 0;
 		i++;
 	}
@@ -75,4 +74,3 @@ int	main(int ac, char **av)
 	send_bits('\0', pid);
 	return 0;
 }
-
