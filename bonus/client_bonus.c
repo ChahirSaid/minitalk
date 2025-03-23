@@ -56,8 +56,7 @@ void	send_bits(unsigned char c, pid_t pid)
 			send_signal(pid, SIGUSR2);
 		else
 			send_signal(pid, SIGUSR1);
-		while (!g_sent)
-			;
+		usleep(2000);
 		g_sent = 0;
 		i++;
 	}
